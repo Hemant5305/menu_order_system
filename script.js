@@ -1,14 +1,15 @@
 /* =========================================================
    DEMO CREDENTIAL STORE
-   ---------------------------------------------------------
-   In production these checks belong on a server. For now,
-   the Super Admin login is fixed, and Cafe Admin logins are
-   whatever the Super Admin dashboard (script.js) has issued
-   and saved into localStorage under "tableqr_cafes".
    ========================================================= */
 const SUPER_ADMIN = {
     id: "superadmin",
     password: "TableQR@2026"
+};
+
+const CAFE_ADMIN = {
+    id: "amberoak",
+    password: "CafeAdmin@2026",
+    cafeName: "Amber & Oak"
 };
 
 const CAFES_STORAGE_KEY = "tableqr_cafes";
@@ -34,38 +35,38 @@ function getCafeAdmins() {
 /* =========================================================
    ELEMENT REFS
    ========================================================= */
-const loginForm = document.getElementById("loginForm");
-const loginIdInput = document.getElementById("loginId");
-const passwordInput = document.getElementById("loginPassword");
-const togglePassword = document.getElementById("togglePassword");
-const formError = document.getElementById("formError");
-const submitBtn = document.getElementById("submitLogin");
-const submitLabel = document.getElementById("submitLabel");
-const toastEl = document.getElementById("toast");
-const ticketIdEl = document.getElementById("ticketId");
-const forgotLink = document.getElementById("forgotLink");
+const loginForm       = document.getElementById("loginForm");
+const loginIdInput    = document.getElementById("loginId");
+const passwordInput   = document.getElementById("loginPassword");
+const togglePassword  = document.getElementById("togglePassword");
+const formError       = document.getElementById("formError");
+const submitBtn       = document.getElementById("submitLogin");
+const submitLabel     = document.getElementById("submitLabel");
+const toastEl         = document.getElementById("toast");
+const ticketIdEl      = document.getElementById("ticketId");
+const forgotLink      = document.getElementById("forgotLink");
 
 /* =========================================================
-   COSMETIC — ticket id on the story panel
+   COSMETIC — random ticket ID on the story panel
    ========================================================= */
 ticketIdEl.textContent = "#TQR-" + String(Math.floor(100000 + Math.random() * 900000));
 
 /* =========================================================
-   PASSWORD VISIBILITY
+   PASSWORD VISIBILITY TOGGLE
    ========================================================= */
-const iconEye = togglePassword.querySelector(".icon-eye");
+const iconEye    = togglePassword.querySelector(".icon-eye");
 const iconEyeOff = togglePassword.querySelector(".icon-eye-off");
 
 togglePassword.addEventListener("click", () => {
     const isHidden = passwordInput.type === "password";
     passwordInput.type = isHidden ? "text" : "password";
-    iconEye.hidden = isHidden;
+    iconEye.hidden    = isHidden;
     iconEyeOff.hidden = !isHidden;
     togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
 });
 
 /* =========================================================
-   FORGOT PASSWORD (placeholder)
+   FORGOT PASSWORD
    ========================================================= */
 forgotLink.addEventListener("click", (e) => {
     e.preventDefault();
@@ -79,9 +80,10 @@ function showError(message) {
     formError.textContent = message;
     formError.hidden = false;
     loginForm.classList.remove("shake");
-    void loginForm.offsetWidth; // restart animation
+    void loginForm.offsetWidth;
     loginForm.classList.add("shake");
 }
+
 function clearError() {
     formError.hidden = true;
     formError.textContent = "";
@@ -100,13 +102,13 @@ function showToast(message, isSuccess = true) {
 }
 
 /* =========================================================
-   SUBMIT
+   SUBMIT — auth check + redirect
    ========================================================= */
 loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     clearError();
 
-    const id = loginIdInput.value.trim();
+    const id       = loginIdInput.value.trim();
     const password = passwordInput.value;
 
     if (!id || !password) {
@@ -116,35 +118,68 @@ loginForm.addEventListener("submit", (e) => {
 
     setLoading(true);
 
-    // simulate a brief auth check so it feels real, not instant
     setTimeout(() => {
         setLoading(false);
 
-        // --- Super Admin ---
-        /* ============================================================
-   DEMO CAFE ADMIN — single cafe console demo login
-============================================================ */
-        const CAFE_ADMIN = {
-            id: "amberoak",
-            password: "CafeAdmin@2026",
-            cafeName: "Amber & Oak"
-        };
-
-        // --- Cafe Admin (issued via Super Admin > Add Cafe) ---
-        const cafeAdmins = getCafeAdmins();
-        const match = cafeAdmins.find(a => a.loginId.toLowerCase() === id.toLowerCase() && a.password === password);
-
-        if (match) {
-            showToast(`Signed in as ${match.cafeName}'s admin. Their console isn't built yet — check back soon.`, true);
+        /* ---------- 1. Super Admin ---------- */
+        if (id.toLowerCase() === SUPER_ADMIN.id.toLowerCase() &&
+            password === SUPER_ADMIN.password) {
+            try {
+                sessionStorage.setItem("tableqr_session", "super_admin");
+            } catch (err) {
+                console.warn("sessionStorage unavailable:", err);
+            }
+            showToast("Welcome back, Super Admin. Redirecting…");
+            setTimeout(() => {
+                window.location.href = "SUPER_Admin_page/admin.html";
+            }, 800);
             return;
         }
 
-        // --- No match ---
+        /* ---------- 2. Demo Cafe Admin (Amber & Oak) ---------- */
+        if (id.toLowerCase() === CAFE_ADMIN.id.toLowerCase() &&
+            password === CAFE_ADMIN.password) {
+            try {
+                sessionStorage.setItem("tableqr_session", CAFE_ADMIN.id);
+            } catch (err) {
+                console.warn("sessionStorage unavailable:", err);
+            }
+            showToast(`Welcome, ${CAFE_ADMIN.cafeName} admin. Redirecting…`);
+            setTimeout(() => {
+                window.location.href = "ADMIN_page/adm.html";
+            }, 800);
+            return;
+        }
+
+        /* ---------- 3. Dynamic Cafe Admins (added via Super Admin) ---------- */
+        const cafeAdmins = getCafeAdmins();
+        const match = cafeAdmins.find(
+            a => a.loginId.toLowerCase() === id.toLowerCase() &&
+                 a.password === password
+        );
+
+        if (match) {
+            try {
+                sessionStorage.setItem("tableqr_session", match.loginId);
+            } catch (err) {
+                console.warn("sessionStorage unavailable:", err);
+            }
+            showToast(`Welcome, ${match.cafeName} admin. Redirecting…`);
+            setTimeout(() => {
+                window.location.href = "ADMIN_page/adm.html";
+            }, 800);
+            return;
+        }
+
+        /* ---------- 4. No match ---------- */
         showError("That ID and password don't match our records. Double-check and try again.");
+
     }, 650);
 });
 
 function setLoading(isLoading) {
     submitBtn.disabled = isLoading;
-    submitLabel.innerHTML = isLoading ? `<span class="spinner"></span> Checking…` : "Sign In";
+    submitLabel.innerHTML = isLoading
+        ? `<span class="spinner"></span> Checking…`
+        : "Sign In";
 }
