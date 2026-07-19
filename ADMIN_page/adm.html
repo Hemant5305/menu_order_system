@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Admin — TableQR</title>
+    <link rel="stylesheet" href="adm.css">
+</head>
+
+<body>
+
+    <!-- ============================================================
+     SIDEBAR
+============================================================ -->
+    <aside class="rail" id="rail">
+        <div class="rail-brand">
+            <span class="mark-ring">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="6.5" cy="6.5" r="2.5" stroke="currentColor" stroke-width="1.6" />
+                    <circle cx="6.5" cy="17.5" r="2.5" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M8.4 8.4L20 20M20 4L8.4 15.6" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+                </svg>
+            </span>
+            <div class="rail-brand-text">
+                <span class="rail-name">Table<em>QR</em></span>
+                <span class="rail-tag">Cafe Console</span>
+            </div>
+        </div>
+
+        <nav class="rail-nav" id="railNav">
+            <button class="rail-link is-active" data-view="dashboard">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="3.5" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="13.5" y="3.5" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="3.5" y="13.5" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="13.5" y="13.5" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6" />
+                </svg>
+                <span>Dashboard</span>
+            </button>
+            <button class="rail-link" data-view="menu">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 3v7a2.5 2.5 0 0 0 5 0V3M8.5 3v18M17 3c-2 1.2-2 4.5-2 6.5s.6 3 2 3 2-1 2-3V3v18"
+                        stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Menu</span>
+            </button>
+            <button class="rail-link" data-view="orders">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 2.5h12v19l-2.4-1.6L13.2 21l-2.4-1.6L8.4 21 6 19.4V2.5Z" stroke="currentColor"
+                        stroke-width="1.6" stroke-linejoin="round" />
+                    <path d="M8.5 7h7M8.5 10.5h7M8.5 14h4.5" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+                </svg>
+                <span>Orders</span>
+                <span class="rail-badge" id="ordersBadge">0</span>
+            </button>
+            <button class="rail-link" data-view="tables">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="8" width="17" height="8" rx="1.6" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M6.5 8V5.5M17.5 8V5.5M6.5 16v2.5M17.5 16v2.5" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+                </svg>
+                <span>Tables</span>
+            </button>
+        </nav>
+
+        <div class="rail-foot">
+            <div class="rail-hint">
+                <span class="dot dot-live"></span>
+                <span>Cafe network online</span>
+            </div>
+            <button class="rail-signout" id="signOutBtn">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H9M15 16l4-4-4-4M19 12H9"
+                        stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Sign out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+     MAIN
+============================================================ -->
+    <div class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="rail-toggle" id="railToggle" aria-label="Toggle navigation">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+            </button>
+
+            <div class="cafe-chip">
+                <span class="cafe-chip-dot"></span>
+                <div class="cafe-chip-text">
+                    <span class="cafe-chip-name">Amber &amp; Oak</span>
+                    <span class="cafe-chip-sub">Cafe #TQR-2026</span>
+                </div>
+            </div>
+
+            <div class="topbar-search">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
+                    <path d="m20 20-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+                <input type="text" id="globalSearch" placeholder="Search orders, items, tables…">
+            </div>
+
+            <div class="topbar-actions">
+                <button class="icon-btn" aria-label="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 14 6 10Z" stroke="currentColor"
+                            stroke-width="1.6" stroke-linejoin="round" />
+                        <path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" />
+                    </svg>
+                    <span class="icon-dot"></span>
+                </button>
+                <button class="admin-chip" id="adminChip">
+                    <span class="admin-avatar">CA</span>
+                    <span class="admin-chip-text">
+                        <span class="admin-chip-name">Cafe Admin</span>
+                        <span class="admin-chip-role">Amber &amp; Oak</span>
+                    </span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ============================================================
+       DASHBOARD VIEW
+  ============================================================ -->
+        <section class="view is-active" data-view="dashboard">
+            <div class="view-head">
+                <div>
+                    <span class="eyebrow">Overview — Today</span>
+                    <h1>Dashboard</h1>
+                    <p class="view-sub">A running read on how the floor is doing right now.</p>
+                </div>
+                <div class="view-head-actions">
+                    <div class="range-toggle">
+                        <button class="is-active" data-range="today">Today</button>
+                        <button data-range="week">This week</button>
+                        <button data-range="month">This month</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-grid" id="statGrid"><!-- stat tickets injected by JS --></div>
+
+            <div class="panel-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <span class="panel-eyebrow">Last 7 days</span>
+                            <h3>Sales trend</h3>
+                        </div>
+                        <span class="panel-note" id="salesTrendNote"></span>
+                    </div>
+                    <div class="bar-chart" id="barChart"><!-- bars injected by JS --></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <span class="panel-eyebrow">Right now</span>
+                            <h3>Most ordered today</h3>
+                        </div>
+                    </div>
+                    <ul class="rank-list" id="rankList"><!-- injected by JS --></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+       MENU VIEW
+  ============================================================ -->
+        <section class="view" data-view="menu">
+            <div class="view-head">
+                <div>
+                    <span class="eyebrow">Catalog</span>
+                    <h1>Menu</h1>
+                    <p class="view-sub">What's on offer — add items, adjust prices, retire what isn't selling.</p>
+                </div>
+                <div class="view-head-actions">
+                    <button class="btn-gold" id="addItemBtn">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Add item
+                    </button>
+                </div>
+            </div>
+
+            <div class="chip-tabs" id="categoryTabs"><!-- injected by JS --></div>
+
+            <div class="menu-grid" id="menuGrid"><!-- injected by JS --></div>
+        </section>
+
+        <!-- ============================================================
+       ORDERS VIEW
+  ============================================================ -->
+        <section class="view" data-view="orders">
+            <div class="view-head">
+                <div>
+                    <span class="eyebrow">Live floor</span>
+                    <h1>Orders</h1>
+                    <p class="view-sub">Every ticket moving through the kitchen right now.</p>
+                </div>
+            </div>
+
+            <div class="chip-tabs" id="orderStatusTabs"><!-- injected by JS --></div>
+
+            <div class="order-grid" id="orderGrid"><!-- injected by JS --></div>
+        </section>
+
+        <!-- ============================================================
+       TABLES VIEW
+  ============================================================ -->
+        <section class="view" data-view="tables">
+            <div class="view-head">
+                <div>
+                    <span class="eyebrow">Floor plan</span>
+                    <h1>Tables</h1>
+                    <p class="view-sub">Tap a table to cycle its status. Changes reflect on the customer menu instantly.
+                    </p>
+                </div>
+                <div class="view-head-actions">
+                    <div class="legend">
+                        <span><i class="dot dot-available"></i>Available</span>
+                        <span><i class="dot dot-occupied"></i>Occupied</span>
+                        <span><i class="dot dot-reserved"></i>Reserved</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-grid" id="tableGrid"><!-- injected by JS --></div>
+        </section>
+
+    </div>
+
+    <!-- ============================================================
+     ADD / EDIT ITEM MODAL
+============================================================ -->
+    <div class="modal-scrim" id="modalScrim">
+        <div class="modal ticket-edge" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-head">
+                <h3 id="modalTitle">Add item</h3>
+                <button class="modal-close" id="modalClose" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+            <form id="itemForm">
+                <label class="field">
+                    <span>Item name</span>
+                    <input type="text" id="itemName" placeholder="e.g. Caramel Cortado" required>
+                </label>
+                <div class="field-row">
+                    <label class="field">
+                        <span>Price</span>
+                        <input type="number" id="itemPrice" step="0.01" min="0" placeholder="0.00" required>
+                    </label>
+                    <label class="field">
+                        <span>Category</span>
+                        <select id="itemCategory" required></select>
+                    </label>
+                </div>
+                <label class="field">
+                    <span>Short description <em>(optional)</em></span>
+                    <textarea id="itemDesc" rows="2" placeholder="What's in it, what it tastes like…"></textarea>
+                </label>
+                <label class="check-field">
+                    <input type="checkbox" id="itemAvailable" checked>
+                    <span>Available on the customer menu</span>
+                </label>
+                <div class="modal-actions">
+                    <button type="button" class="btn-ghost" id="modalCancel">Cancel</button>
+                    <button type="submit" class="btn-gold" id="modalSubmit">Save item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="adm.js"></script>
+</body>
+
+</html>

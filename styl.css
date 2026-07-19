@@ -1,0 +1,798 @@
+/* =========================================================
+   TOKENS
+   ========================================================= */
+:root {
+    --ink: #0E0C0A;
+    --ink-2: #15120F;
+    --surface: #1A1613;
+    --surface-2: #211C17;
+    --line: #362D22;
+    --line-soft: #241E18;
+
+    --gold: #C9A227;
+    --gold-hi: #E4C468;
+    --gold-dim: #8A7024;
+    --gold-ink: #1B1408;
+
+    --good: #7CA37E;
+    --bad: #B6604A;
+    --bad-soft: rgba(182, 96, 74, .14);
+
+    --text-hi: #F3ECDD;
+    --text-mid: #B4A995;
+    --text-dim: #756B5A;
+
+    --radius-s: 4px;
+    --radius-m: 10px;
+    --radius-l: 16px;
+
+    --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-body: 'Jost', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+    --shadow-2: 0 30px 80px -25px rgba(0, 0, 0, .8);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--text-hi);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin: 0;
+}
+
+em {
+    font-style: italic;
+    color: var(--gold-hi);
+}
+
+p {
+    margin: 0;
+}
+
+a {
+    color: inherit;
+}
+
+svg {
+    display: block;
+}
+
+::selection {
+    background: var(--gold);
+    color: var(--gold-ink);
+}
+
+:focus-visible {
+    outline: 1px solid var(--gold-hi);
+    outline-offset: 2px;
+}
+
+/* fine paper-grain texture, so the black never reads as a flat void */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(var(--line-soft) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: .28;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: .5;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: overlay;
+}
+
+/* =========================================================
+   SHARED — logo mark
+   ========================================================= */
+.mark-ring {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-hi);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.mark-ring svg {
+    width: 18px;
+    height: 18px;
+}
+
+.gate-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.gate-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-hi);
+}
+
+.gate-name em {
+    font-style: normal;
+    color: var(--gold-hi);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    margin-left: 1px;
+}
+
+.gate-tag {
+    font-size: 10.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: .14em;
+}
+
+/* =========================================================
+   LAYOUT — split gate
+   ========================================================= */
+.gate {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+}
+
+/* ---------- LEFT: story panel ---------- */
+.gate-story {
+    background: var(--ink-2);
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* soft studio-light glow, top-left */
+.gate-story-glow {
+    position: absolute;
+    width: 640px;
+    height: 640px;
+    top: -220px;
+    left: -220px;
+    background: radial-gradient(circle, rgba(201, 162, 39, .14) 0%, rgba(201, 162, 39, .05) 45%, transparent 70%);
+    pointer-events: none;
+}
+
+/* ambient concentric rings, echoing the studio motif */
+.gate-story::before,
+.gate-story::after {
+    content: "";
+    position: absolute;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.gate-story::before {
+    width: 680px;
+    height: 680px;
+    top: 50%;
+    left: 66%;
+    transform: translate(-50%, -50%);
+    opacity: .07;
+}
+
+.gate-story::after {
+    width: 460px;
+    height: 460px;
+    top: 50%;
+    left: 66%;
+    transform: translate(-50%, -50%);
+    opacity: .1;
+}
+
+.gate-story-inner {
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+}
+
+.gate-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 56px;
+}
+
+.gate-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--gold-hi);
+    margin-bottom: 18px;
+}
+
+.gate-eyebrow i {
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--gold);
+}
+
+.gate-headline {
+    font-size: 44px;
+    line-height: 1.14;
+    font-weight: 600;
+    color: var(--text-hi);
+    margin-bottom: 18px;
+}
+
+.gate-sub {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    max-width: 40ch;
+    margin-bottom: 38px;
+}
+
+/* signature: access ticket, dark plate with gold hairline perforation */
+.access-stub {
+    background: var(--surface);
+    color: var(--text-hi);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--gold-dim);
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+    margin-bottom: 40px;
+}
+
+.access-stub-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px 11px;
+}
+
+.access-stub-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: .13em;
+    color: var(--gold-hi);
+    font-weight: 600;
+}
+
+.access-stub-id {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-mid);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    padding: 3px 9px;
+    border-radius: 100px;
+}
+
+.access-stub-perf {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim) 12%, var(--gold-dim) 88%, transparent);
+}
+
+.access-stub-body {
+    padding: 15px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.access-stub-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    font-size: 12.5px;
+}
+
+.access-stub-item .k {
+    color: var(--text-dim);
+}
+
+.access-stub-item .v {
+    font-weight: 500;
+    color: var(--text-hi);
+    text-align: right;
+}
+
+.access-live {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    justify-content: flex-end;
+}
+
+.access-live i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(201, 162, 39, .2);
+}
+
+.gate-points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.gate-points li {
+    display: flex;
+    gap: 13px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--text-mid);
+    line-height: 1.55;
+}
+
+.gate-points li span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gold-hi);
+    flex-shrink: 0;
+    margin-top: 3px;
+    letter-spacing: .03em;
+}
+
+/* ---------- RIGHT: login card ---------- */
+.gate-form-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 22px;
+}
+
+/* compact brand header — shown only when the story panel collapses */
+.mobile-brand {
+    display: none;
+    align-items: center;
+    gap: 12px;
+}
+
+.login-ticket {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    color: var(--text-hi);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--gold);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+}
+
+.login-ticket-top {
+    padding: 36px 36px 6px;
+}
+
+.login-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    font-weight: 600;
+    color: var(--gold-hi);
+}
+
+.login-ticket-top h2 {
+    font-size: 26px;
+    margin-top: 10px;
+    color: var(--text-hi);
+}
+
+.login-sub {
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-top: 10px;
+    line-height: 1.55;
+}
+
+.login-perf {
+    height: 1px;
+    margin-top: 26px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim) 12%, var(--gold-dim) 88%, transparent);
+}
+
+.login-ticket-bottom {
+    padding: 24px 36px 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-mid);
+    letter-spacing: .02em;
+}
+
+.field input {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    color: var(--text-hi);
+    padding: 12px 14px;
+    font-size: 13.5px;
+    font-family: var(--font-body);
+    width: 100%;
+}
+
+.field input::placeholder {
+    color: var(--text-dim);
+}
+
+.field input:focus {
+    border-color: var(--gold-dim);
+}
+
+.password-field {
+    position: relative;
+    display: flex;
+}
+
+.password-field input {
+    flex: 1;
+    padding-right: 42px;
+}
+
+.peek-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--text-dim);
+}
+
+.peek-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.peek-btn svg[hidden] {
+    display: none;
+}
+
+.peek-btn:hover {
+    background: var(--surface);
+    color: var(--text-mid);
+}
+
+.field-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12.5px;
+}
+
+/* custom checkbox */
+.check {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text-mid);
+    cursor: pointer;
+    user-select: none;
+}
+
+.check input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.check-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    transition: background .15s ease, border-color .15s ease;
+}
+
+.check-box svg {
+    width: 10px;
+    height: 9px;
+    color: var(--gold-ink);
+    opacity: 0;
+    transform: scale(.6);
+    transition: opacity .12s ease, transform .12s ease;
+}
+
+.check input:checked+.check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+}
+
+.check input:checked+.check-box svg {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.check input:focus-visible+.check-box {
+    outline: 1px solid var(--gold-hi);
+    outline-offset: 2px;
+}
+
+.check-label {
+    font-size: 12.5px;
+}
+
+.link-muted {
+    color: var(--gold-hi);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.link-muted:hover {
+    text-decoration: underline;
+}
+
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bad-soft);
+    color: var(--bad);
+    border: 1px solid rgba(182, 96, 74, .4);
+    border-radius: var(--radius-s);
+    padding: 10px 13px;
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+.form-error[hidden] {
+    display: none;
+}
+
+.shake {
+    animation: shake .4s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-6px);
+    }
+
+    40% {
+        transform: translateX(5px);
+    }
+
+    60% {
+        transform: translateX(-4px);
+    }
+
+    80% {
+        transform: translateX(3px);
+    }
+}
+
+.btn-submit {
+    background: var(--gold);
+    color: var(--gold-ink);
+    border: none;
+    border-radius: var(--radius-s);
+    padding: 14px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: filter .15s ease, transform .1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    filter: brightness(1.1);
+}
+
+.btn-submit:active {
+    transform: translateY(1px);
+}
+
+.btn-submit[disabled] {
+    opacity: .7;
+    cursor: default;
+}
+
+.spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(27, 20, 8, .35);
+    border-top-color: var(--gold-ink);
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.gate-footnote {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+}
+
+.gate-secure-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    letter-spacing: .03em;
+}
+
+.gate-secure-line svg {
+    width: 13px;
+    height: 13px;
+    color: var(--gold-dim);
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--gold);
+    color: var(--text-hi);
+    padding: 13px 20px;
+    border-radius: var(--radius-s);
+    font-size: 13px;
+    box-shadow: var(--shadow-2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 80;
+    font-family: var(--font-mono);
+    max-width: 90vw;
+}
+
+.toast.is-shown {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.toast.is-error {
+    border-left-color: var(--bad);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 980px) {
+    .gate {
+        grid-template-columns: 1fr;
+    }
+
+    .gate-story {
+        display: none;
+    }
+
+    .gate-form-wrap {
+        padding: 32px 20px;
+        min-height: 100vh;
+    }
+
+    .mobile-brand {
+        display: flex;
+        margin-bottom: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-ticket-top {
+        padding: 28px 24px 4px;
+    }
+
+    .login-ticket-bottom {
+        padding: 22px 24px 28px;
+    }
+}
+
+@media (max-height: 760px) and (min-width: 981px) {
+    .gate-headline {
+        font-size: 36px;
+        margin-bottom: 14px;
+    }
+
+    .gate-sub {
+        margin-bottom: 26px;
+    }
+
+    .gate-brand {
+        margin-bottom: 34px;
+    }
+
+    .access-stub {
+        margin-bottom: 26px;
+    }
+
+    .gate-points {
+        gap: 9px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: .001ms !important;
+        animation-duration: .001ms !important;
+    }
+}

@@ -4,373 +4,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kettle & Crumb — Table Order</title>
-    <meta name="description" content="Scan, browse the menu, and order straight from your table.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>Sign In — TableQR</title>
+    <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="styl.css">
 </head>
 
 <body>
 
-    <!-- ============================================================
-     CUSTOMER MENU INTERFACE
-============================================================= -->
-    <div id="customerApp">
+    <div class="gate">
 
-        <!-- table simulator strip (demo-only helper) -->
-        <div class="sim-strip">
-            <span>Demo: this page normally opens from a table's QR code —</span>
-            <label>Simulate table&nbsp;<input type="number" id="simTableInput" min="1" max="40" value="7"></label>
-            <button type="button" id="simTableGo">Scan</button>
-        </div>
+        <!-- ============ LEFT — BRAND / STORY PANEL ============ -->
+        <section class="gate-story">
+            <div class="gate-story-glow"></div>
+            <div class="gate-story-inner">
+                <div class="gate-brand">
+                    <span class="mark-ring">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="6.5" cy="6.5" r="2.5" stroke="currentColor" stroke-width="1.3" />
+                            <circle cx="6.5" cy="17.5" r="2.5" stroke="currentColor" stroke-width="1.3" />
+                            <path d="M8.4 8.4L20 20M20 4L8.4 15.6" stroke="currentColor" stroke-width="1.3"
+                                stroke-linecap="round" />
+                        </svg>
+                    </span>
+                    <div class="gate-brand-text">
+                        <span class="gate-name">Table<em>QR</em></span>
+                        <span class="gate-tag">Control Room</span>
+                    </div>
+                </div>
 
-        <header class="menu-header">
-            <div class="mh-left">
-                <div class="brand-mark">☕</div>
-                <div>
-                    <div class="brand-name">Kettle &amp; Crumb</div>
-                    <div class="brand-tag">All-day café · Sante Majra</div>
+                <span class="gate-eyebrow"><i></i>EST. 2026 — CAFE NETWORK OPERATIONS</span>
+                <h1 class="gate-headline">One login.<br><em>Every</em> cafe you run.</h1>
+                <p class="gate-sub">Every table, every order, every cafe on the network — routed through a single,
+                    private sign-in.</p>
+
+                <!-- signature: a stub illustrating how access is issued -->
+                <div class="access-stub">
+                    <div class="access-stub-row">
+                        <span class="access-stub-label">Access Ticket</span>
+                        <span class="access-stub-id" id="ticketId">#TQR-000000</span>
+                    </div>
+                    <div class="access-stub-perf"></div>
+                    <div class="access-stub-body">
+                        <div class="access-stub-item">
+                            <span class="k">Issued to</span>
+                            <span class="v">Super Admin · Cafe Admin</span>
+                        </div>
+                        <div class="access-stub-item">
+                            <span class="k">Grants</span>
+                            <span class="v">Network control / single cafe console</span>
+                        </div>
+                        <div class="access-stub-item">
+                            <span class="k">Status</span>
+                            <span class="v access-live"><i></i>Awaiting sign-in</span>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="gate-points">
+                    <li><span>01</span> Super Admins onboard and manage every cafe on the network.</li>
+                    <li><span>02</span> Cafe Admins sign in with the ID and password issued to them.</li>
+                    <li><span>03</span> One gate, routed automatically to the right console.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============ RIGHT — LOGIN CARD ============ -->
+        <section class="gate-form-wrap">
+
+            <!-- compact brand header, visible only when the story panel is hidden -->
+            <div class="mobile-brand">
+                <span class="mark-ring">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="6.5" cy="6.5" r="2.5" stroke="currentColor" stroke-width="1.3" />
+                        <circle cx="6.5" cy="17.5" r="2.5" stroke="currentColor" stroke-width="1.3" />
+                        <path d="M8.4 8.4L20 20M20 4L8.4 15.6" stroke="currentColor" stroke-width="1.3"
+                            stroke-linecap="round" />
+                    </svg>
+                </span>
+                <div class="gate-brand-text">
+                    <span class="gate-name">Table<em>QR</em></span>
+                    <span class="gate-tag">Control Room</span>
                 </div>
             </div>
-            <div class="table-stub" id="tableStub">
-                <span class="stub-eyebrow">Table No.</span>
-                <span class="stub-num" id="tableNumDisplay">07</span>
-            </div>
-        </header>
 
-        <div class="menu-toolbar">
-            <div class="search-wrap">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="7" />
-                    <path d="m21 21-4.3-4.3" />
-                </svg>
-                <input type="text" id="menuSearch" placeholder="Search the menu — dosa, coffee, waffle…">
-            </div>
-            <div class="filter-pills">
-                <button class="fp active" data-filter="all" onclick="setDietFilter('all',this)">All</button>
-                <button class="fp veg" data-filter="veg" onclick="setDietFilter('veg',this)"><span
-                        class="dot veg-dot"></span>Veg</button>
-                <button class="fp nonveg" data-filter="nonveg" onclick="setDietFilter('nonveg',this)"><span
-                        class="dot nonveg-dot"></span>Non-Veg</button>
-                <button class="fp" data-filter="bestseller" onclick="setDietFilter('bestseller',this)">★
-                    Bestsellers</button>
-            </div>
-        </div>
+            <div class="login-ticket">
 
-        <nav class="cat-rail" id="catRail"></nav>
-
-        <main class="menu-main">
-            <div class="menu-grid" id="menuGrid"></div>
-            <p class="no-results hidden-panel" id="noResults">Nothing matches that search — try another dish or clear
-                the filters.</p>
-        </main>
-
-        <footer class="menu-footer">
-            <div><b>Kettle &amp; Crumb</b> · Sector 115, Sante Majra</div>
-            <div>Open daily · 8:00 AM – 10:00 PM</div>
-            <a href="#" class="staff-link" onclick="openAdmin(event)">Owner Login →</a>
-        </footer>
-
-        <!-- floating cart tab -->
-        <button class="cart-tab hidden-panel" id="cartTab" onclick="openCartDrawer()">
-            <span class="cart-tab-count" id="cartTabCount">0</span>
-            <span class="cart-tab-label">View Ticket</span>
-            <span class="cart-tab-total" id="cartTabTotal">₹0</span>
-        </button>
-
-        <!-- order tracker bar -->
-        <div class="tracker-bar hidden-panel" id="trackerBar" onclick="openTrackerDetail()">
-            <span class="tracker-dot"></span>
-            <span>Order <b id="trackerOrderId">—</b></span>
-            <span class="tracker-status" id="trackerStatus">Placed</span>
-        </div>
-
-        <!-- cart / ticket drawer -->
-        <div class="drawer-bg" id="cartDrawerBg" onclick="if(event.target===this)closeCartDrawer()">
-            <div class="ticket" id="ticketPanel">
-                <div class="ticket-torn top"></div>
-                <div class="ticket-head">
-                    <div>ORDER TICKET</div>
-                    <button class="ticket-close" onclick="closeCartDrawer()">✕</button>
-                </div>
-                <div class="ticket-meta">
-                    <span>TABLE <b id="ticketTable">07</b></span>
-                    <span id="ticketTime">--:--</span>
-                </div>
-                <div class="ticket-items" id="ticketItems"></div>
-                <div class="ticket-empty hidden-panel" id="ticketEmpty">Your ticket is empty — add something from the
-                    menu.</div>
-                <div class="ticket-divider"></div>
-                <div class="ticket-row"><span>Subtotal</span><span id="ticketSubtotal">₹0</span></div>
-                <div class="ticket-row muted"><span>Taxes (5%)</span><span id="ticketTax">₹0</span></div>
-                <div class="ticket-row total"><span>Total</span><span id="ticketTotal">₹0</span></div>
-                <textarea id="ticketNote"
-                    placeholder="Notes for the kitchen (optional) — e.g. less spicy, no onion"></textarea>
-                <button class="btn-place" id="placeOrderBtn" onclick="placeOrder()">Place Order</button>
-                <div class="ticket-barcode"></div>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="toast"></div>
-
-    <!-- ============================================================
-     OWNER DASHBOARD
-============================================================= -->
-    <div id="admin-root">
-
-        <div class="admin-login" id="adminLogin">
-            <div class="login-card">
-                <div class="brand-mark" style="margin:0 auto 10px;">☕</div>
-                <div class="brand-name" style="text-align:center;">Owner Portal</div>
-                <p class="sub">KETTLE &amp; CRUMB — MANAGEMENT</p>
-                <form id="loginForm">
-                    <div class="field"><label>Email</label><input required type="email" id="loginEmail"
-                            placeholder="owner@kettleandcrumb.com"></div>
-                    <div class="field"><label>Password</label><input required type="password" id="loginPass"
-                            placeholder="••••••••"></div>
-                    <button type="submit" class="btn-place" style="width:100%;">Sign In</button>
-                </form>
-                <div class="demo-hint">Demo credentials — any email + password <b>owner123</b></div>
-                <a class="back-site" href="#" onclick="closeAdmin(event)">← Back to menu</a>
-            </div>
-        </div>
-
-        <div class="admin-shell hidden-panel" id="adminShell">
-            <aside class="admin-sidebar">
-                <div class="brand-mark" style="margin-bottom:6px;">☕</div>
-                <div class="sidebar-brand">Kettle &amp; Crumb</div>
-                <a class="side-link active" data-tab="dash" onclick="switchTab('dash',this)">◆ Dashboard</a>
-                <a class="side-link" data-tab="orders" onclick="switchTab('orders',this)">◆ Orders</a>
-                <a class="side-link" data-tab="menu" onclick="switchTab('menu',this)">◆ Menu Management</a>
-                <a class="side-link" data-tab="revenue" onclick="switchTab('revenue',this)">◆ Revenue</a>
-                <a class="side-link" data-tab="settings" onclick="switchTab('settings',this)">◆ Settings</a>
-                <a class="side-link" onclick="closeAdmin(event)" style="margin-top:auto;">◆ Logout</a>
-            </aside>
-
-            <main class="admin-main">
-                <!-- DASHBOARD -->
-                <div class="admin-tab" id="tab-dash">
-                    <div class="admin-topbar">
-                        <div>
-                            <h1>Dashboard</h1>
-                            <div class="sub">Today at a glance.</div>
-                        </div>
-                        <div class="topbar-actions">
-                            <button type="button" class="mini-btn" onclick="switchTabByName('orders')">View
-                                Orders</button>
-                            <button type="button" class="mini-btn ok" onclick="switchTabByName('menu')">Manage
-                                Menu</button>
-                        </div>
-                    </div>
-                    <div class="stat-grid" id="statGrid"></div>
-                    <div class="dash-split">
-                        <div class="admin-panel">
-                            <div class="panel-head">
-                                <h3>Orders by Status</h3>
-                            </div>
-                            <div id="statusBars"></div>
-                        </div>
-                        <div class="admin-panel">
-                            <div class="panel-head">
-                                <h3>Recent Activity</h3>
-                            </div>
-                            <div id="activityFeed" class="activity-feed"></div>
-                        </div>
-                    </div>
-                    <div class="admin-panel">
-                        <div class="panel-head">
-                            <h3>Latest Orders</h3>
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Order</th>
-                                    <th>Table</th>
-                                    <th>Items</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentOrdersBody"></tbody>
-                        </table>
-                    </div>
+                <div class="login-ticket-top">
+                    <span class="login-eyebrow">Restricted Access</span>
+                    <h2>Sign in to your console</h2>
+                    <p class="login-sub">Use the ID and password issued to you. Super Admins and Cafe Admins both sign
+                        in here.</p>
                 </div>
 
-                <!-- ORDERS -->
-                <div class="admin-tab hidden-panel" id="tab-orders">
-                    <div class="admin-topbar">
-                        <div>
-                            <h1>Orders</h1>
-                            <div class="sub">Move each order through the kitchen workflow.</div>
-                        </div>
-                        <div class="topbar-actions"><span class="count-chip" id="orderCount">0 orders</span></div>
-                    </div>
-                    <div class="order-cols" id="orderCols"></div>
-                </div>
+                <div class="login-perf"></div>
 
-                <!-- MENU MANAGEMENT -->
-                <div class="admin-tab hidden-panel" id="tab-menu">
-                    <div class="admin-topbar">
-                        <div>
-                            <h1>Menu Management</h1>
-                            <div class="sub">Add dishes, edit prices, toggle availability.</div>
-                        </div>
-                        <div class="topbar-actions">
-                            <span class="count-chip" id="menuCount">0 items</span>
-                            <button type="button" class="mini-btn ok" onclick="openItemEditor()">+ Add Item</button>
-                        </div>
-                    </div>
-                    <div class="cat-filter-row" id="adminCatFilter"></div>
-                    <div class="admin-grid-menu" id="adminMenuGrid"></div>
-                </div>
+                <form id="loginForm" class="login-ticket-bottom" novalidate>
 
-                <!-- REVENUE -->
-                <div class="admin-tab hidden-panel" id="tab-revenue">
-                    <div class="admin-topbar">
-                        <div>
-                            <h1>Revenue</h1>
-                            <div class="sub">Track daily takings — automatic from orders, plus manual entries.</div>
-                        </div>
+                    <div class="field">
+                        <label for="loginId">Login ID</label>
+                        <input type="text" id="loginId" placeholder="you@cafe.com or admin ID" autocomplete="username"
+                            required>
                     </div>
-                    <div class="stat-grid" id="revenueStatGrid"></div>
-                    <div class="admin-panel">
-                        <div class="panel-head">
-                            <h3>Last 7 Days</h3>
-                        </div>
-                        <div id="revenueChart" class="revenue-chart"></div>
-                    </div>
-                    <div class="admin-panel">
-                        <div class="panel-head">
-                            <h3>Add a Manual Entry</h3>
-                        </div>
-                        <form id="revenueForm" class="form-row" style="align-items:flex-end;">
-                            <div class="field"><label>Date</label><input required type="date" id="revDate"></div>
-                            <div class="field"><label>Amount (₹)</label><input required type="number" min="0"
-                                    id="revAmount" placeholder="e.g. 2400"></div>
-                            <div class="field"><label>Note</label><input type="text" id="revNote"
-                                    placeholder="e.g. Cash counter sales"></div>
-                            <button type="submit" class="btn-place" style="width:auto;padding:13px 26px;">Add
-                                Entry</button>
-                        </form>
-                    </div>
-                    <div class="admin-panel">
-                        <div class="panel-head">
-                            <h3>Revenue Log</h3>
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Source</th>
-                                    <th>Note</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody id="revenueLogBody"></tbody>
-                        </table>
-                    </div>
-                </div>
 
-                <!-- SETTINGS -->
-                <div class="admin-tab hidden-panel" id="tab-settings">
-                    <div class="admin-topbar">
-                        <div>
-                            <h1>Settings</h1>
-                            <div class="sub">Basic details shown across the customer menu.</div>
+                    <div class="field">
+                        <label for="loginPassword">Password</label>
+                        <div class="password-field">
+                            <input type="password" id="loginPassword" placeholder="Enter your password"
+                                autocomplete="current-password" required>
+                            <button type="button" class="peek-btn" id="togglePassword" aria-label="Show password">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor"
+                                        stroke-width="1.4" stroke-linejoin="round" />
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.4" />
+                                </svg>
+                                <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" hidden>
+                                    <path
+                                        d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.24 4.24M6.5 6.7C4.3 8.1 2.7 10 2 12c0 0 3.6 7 10 7 2 0 3.7-.5 5.1-1.3M9.9 5.2A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7-.5.9-1.4 2.3-2.7 3.6"
+                                        stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
-                    <form class="admin-panel" id="settingsForm">
-                        <div class="panel-head">
-                            <h3>Café Info</h3>
-                        </div>
-                        <div class="form-row">
-                            <div class="field"><label>Café Name</label><input type="text" id="setCafeName"
-                                    value="Kettle & Crumb"></div>
-                            <div class="field"><label>Tagline</label><input type="text" id="setTagline"
-                                    value="All-day café · Sante Majra"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="field"><label>Address</label><input type="text" id="setAddress"
-                                    value="Sector 115, Sante Majra"></div>
-                            <div class="field"><label>Opening Hours</label><input type="text" id="setHours"
-                                    value="Open daily · 8:00 AM – 10:00 PM"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="field"><label>Contact Phone</label><input type="text" id="setPhone"
-                                    value="+91 98xxx xxxxx"></div>
-                            <div class="field"><label>Number of Tables</label><input type="number" id="setTableCount"
-                                    value="20" min="1"></div>
-                        </div>
-                        <label class="switch-row" style="margin-top:6px;">
-                            <input type="checkbox" id="setOrderSound" checked>
-                            <span>Play a sound alert when a new order comes in</span>
+
+                    <div class="field-inline">
+                        <label class="check">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="check-box">
+                                <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.5 5.2L4.3 8 10.5 1.5" stroke="currentColor" stroke-width="1.6"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span class="check-label">Keep me signed in</span>
                         </label>
-                        <div class="submit-row" style="margin-top:20px;">
-                            <button type="submit" class="btn-place" style="width:auto;padding:13px 30px;">Save &amp;
-                                Publish to Menu</button>
-                            <span class="submit-note" id="settingsSavedNote"></span>
-                        </div>
-                    </form>
-                </div>
-            </main>
-        </div>
+                        <a href="#" class="link-muted" id="forgotLink">Forgot password?</a>
+                    </div>
+
+                    <p class="form-error" id="formError" hidden></p>
+
+                    <button type="submit" class="btn-submit" id="submitLogin">
+                        <span id="submitLabel">Sign In</span>
+                    </button>
+
+                    <p class="gate-footnote">
+                        Don't have access yet? Ask your platform admin to issue you a login ID.
+                    </p>
+                </form>
+            </div>
+
+            <p class="gate-secure-line">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 11V7.5a4 4 0 0 1 8 0V11" stroke="currentColor" stroke-width="1.3"
+                        stroke-linecap="round" />
+                </svg>
+                Secure sign-in · TableQR Network
+            </p>
+        </section>
+
     </div>
 
-    <!-- item editor modal -->
-    <div class="drawer-bg" id="itemEditorBg" onclick="if(event.target===this)closeItemEditor()">
-        <div class="item-editor" id="itemEditor">
-            <div class="panel-head">
-                <h3 id="editorTitle">Add Menu Item</h3><button class="ticket-close"
-                    onclick="closeItemEditor()">✕</button>
-            </div>
-            <div class="editor-photo">
-                <img id="editorImgPreview" src="">
-                <input type="file" id="editorImgUpload" accept="image/*" style="display:none"
-                    onchange="handleEditorImageUpload(event)">
-                <button type="button" class="mini-btn"
-                    onclick="document.getElementById('editorImgUpload').click()">Upload Photo</button>
-            </div>
-            <div class="form-row">
-                <div class="field full"><label>Dish Name</label><input type="text" id="editorName"></div>
-            </div>
-            <div class="form-row">
-                <div class="field full"><label>Description</label><textarea id="editorDesc"></textarea></div>
-            </div>
-            <div class="form-row">
-                <div class="field"><label>Price (₹)</label><input type="number" id="editorPrice"></div>
-                <div class="field"><label>Category</label><select id="editorCategory"></select></div>
-            </div>
-            <div class="form-row">
-                <div class="field"><label>Diet</label>
-                    <select id="editorDiet">
-                        <option value="veg">Veg</option>
-                        <option value="nonveg">Non-Veg</option>
-                    </select>
-                </div>
-                <div class="field"><label>Spice Level</label>
-                    <select id="editorSpice">
-                        <option value="0">Mild</option>
-                        <option value="1">Medium</option>
-                        <option value="2">Spicy</option>
-                    </select>
-                </div>
-            </div>
-            <label class="switch-row" style="margin:6px 0 16px;"><input type="checkbox" id="editorBestseller"><span>Mark
-                    as bestseller</span></label>
-            <div class="submit-row">
-                <button type="button" class="btn-place" style="width:auto;padding:13px 28px;"
-                    onclick="saveEditorItem()">Save Item</button>
-                <span id="editorDeleteWrap"></span>
-            </div>
-        </div>
-    </div>
+    <div class="toast" id="toast"></div>
 
-    <script src="script.js" defer></script>
+    <script src="lg.js"></script>
 </body>
 
 </html>

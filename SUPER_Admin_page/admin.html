@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Room — Super Admin</title>
+    <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ============ SIDEBAR ============ -->
+        <aside class="rail">
+            <div class="rail-brand">
+                <span class="rail-mark">✂</span>
+                <div class="rail-brand-text">
+                    <span class="rail-name">Table<em>QR</em></span>
+                    <span class="rail-tag">Control Room</span>
+                </div>
+            </div>
+
+            <nav class="rail-nav">
+                <button class="rail-item is-active" data-view="overview">
+                    <span class="rail-icon">▤</span> Overview
+                </button>
+                <button class="rail-item" data-view="cafes">
+                    <span class="rail-icon">▥</span> All Cafes
+                </button>
+                <button class="rail-item" data-action="add-cafe">
+                    <span class="rail-icon">＋</span> Add Cafe
+                </button>
+            </nav>
+
+            <div class="rail-footer">
+                <div class="rail-avatar">SA</div>
+                <div class="rail-footer-text">
+                    <span class="rail-footer-name">Super Admin</span>
+                    <span class="rail-footer-sub">Root access</span>
+                </div>
+                <button class="rail-logout" id="logoutBtn" title="Log out">⏻</button>
+            </div>
+        </aside>
+
+        <!-- ============ MAIN ============ -->
+        <main class="main">
+
+            <header class="topbar">
+                <div class="topbar-title">
+                    <span class="eyebrow"><i></i>Network overview — updated live</span>
+                    <h1>Cafe <em>Network</em></h1>
+                    <p>Every location running on TableQR, at a glance.</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="search">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" id="searchInput" placeholder="Search by cafe name or city…">
+                    </div>
+                    <button class="btn btn-primary" id="openAddCafe">
+                        <span>＋</span> Add Cafe
+                    </button>
+                </div>
+            </header>
+
+            <!-- ============ STAT STRIP ============ -->
+            <section class="stat-strip" id="statStrip">
+                <div class="stat-card">
+                    <span class="stat-label">Live Cafes</span>
+                    <span class="stat-value" id="statTotal">0</span>
+                    <span class="stat-foot">onboarded to date</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Tables Wired</span>
+                    <span class="stat-value" id="statTables">0</span>
+                    <span class="stat-foot">QR-enabled seats</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Open Right Now</span>
+                    <span class="stat-value" id="statOpen">0</span>
+                    <span class="stat-foot">accepting orders</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Paused</span>
+                    <span class="stat-value" id="statPaused">0</span>
+                    <span class="stat-foot">need attention</span>
+                </div>
+            </section>
+
+            <!-- ============ CAFE TICKET GRID ============ -->
+            <section class="deck-head">
+                <h2>Cafe Roster</h2>
+                <span class="deck-count" id="deckCount">0 locations</span>
+            </section>
+
+            <section class="ticket-grid" id="ticketGrid">
+                <!-- cards injected by script.js -->
+            </section>
+
+            <div class="empty-state" id="emptyState" hidden>
+                <span class="empty-mark">◌</span>
+                <h3>No cafes match that search</h3>
+                <p>Try a different name, or clear the search to see the full roster.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ============ OVERLAY ============ -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ============ ADD / EDIT CAFE DRAWER ============ -->
+    <aside class="drawer" id="cafeDrawer" aria-hidden="true">
+        <form id="cafeForm" novalidate>
+            <header class="drawer-head">
+                <div>
+                    <span class="drawer-eyebrow" id="drawerEyebrow">New Entry</span>
+                    <h2 id="drawerTitle">Add a Cafe</h2>
+                </div>
+                <button type="button" class="drawer-close" id="closeDrawer" aria-label="Close">✕</button>
+            </header>
+
+            <div class="drawer-body">
+
+                <input type="hidden" id="cafeId">
+
+                <section class="form-section">
+                    <h3 class="form-section-title">Cafe Information</h3>
+
+                    <div class="field">
+                        <label for="cafeName">Cafe Name</label>
+                        <input type="text" id="cafeName" placeholder="e.g. Blue Tokai, Sector 14" required>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field upload-field">
+                            <label>Cafe Logo</label>
+                            <label class="upload-box" for="cafeLogo">
+                                <img id="cafeLogoPreview" class="upload-preview" hidden>
+                                <span class="upload-placeholder" id="cafeLogoPlaceholder">
+                                    <span class="upload-icon">⬒</span> Upload logo
+                                </span>
+                            </label>
+                            <input type="file" id="cafeLogo" accept="image/*" hidden>
+                        </div>
+
+                        <div class="field upload-field">
+                            <label>Background Image</label>
+                            <label class="upload-box upload-box--wide" for="cafeBg">
+                                <img id="cafeBgPreview" class="upload-preview" hidden>
+                                <span class="upload-placeholder" id="cafeBgPlaceholder">
+                                    <span class="upload-icon">⬒</span> Upload cover photo
+                                </span>
+                            </label>
+                            <input type="file" id="cafeBg" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="cafeAddress">Cafe Address</label>
+                        <input type="text" id="cafeAddress" placeholder="Street, city, state" required>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="cafeContact">Contact Number</label>
+                            <input type="tel" id="cafeContact" placeholder="+91 98XXX XXXXX" required>
+                        </div>
+                        <div class="field">
+                            <label for="cafeTables">Number of Tables</label>
+                            <input type="number" id="cafeTables" min="1" placeholder="e.g. 12" required>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="cafeOpen">Opening Time</label>
+                            <input type="time" id="cafeOpen" required>
+                        </div>
+                        <div class="field">
+                            <label for="cafeClose">Closing Time</label>
+                            <input type="time" id="cafeClose" required>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h3 class="form-section-title">Create Cafe Admin</h3>
+                    <p class="form-section-sub">This login goes to the cafe owner so they can manage their own menu and
+                        tables.</p>
+
+                    <div class="field">
+                        <label for="adminName">Admin Full Name</label>
+                        <input type="text" id="adminName" placeholder="Owner or manager name" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="adminEmail">Admin Email</label>
+                        <input type="email" id="adminEmail" placeholder="owner@cafe.com" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="adminLoginId">Login ID <span class="field-hint">(this is what they'll sign in
+                                with)</span></label>
+                        <div class="password-field">
+                            <input type="text" id="adminLoginId" placeholder="auto-generated from cafe name" required>
+                            <button type="button" class="ghost-btn" id="generateLoginId">Regenerate</button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="adminPassword">Temporary Password</label>
+                        <div class="password-field">
+                            <input type="password" id="adminPassword" placeholder="Set an initial password" required>
+                            <button type="button" class="ghost-btn" id="generatePassword">Generate</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <footer class="drawer-foot">
+                <button type="button" class="btn btn-ghost" id="cancelDrawer">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="submitCafe">Save Cafe</button>
+            </footer>
+        </form>
+    </aside>
+
+    <!-- ============ DELETE CONFIRM MODAL ============ -->
+    <div class="modal" id="deleteModal" aria-hidden="true">
+        <div class="modal-card">
+            <span class="modal-stamp">Remove</span>
+            <h3>Remove this cafe?</h3>
+            <p id="deleteModalText">This will permanently delete the cafe, its tables, and its admin login. This can't
+                be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="cancelDelete">Keep Cafe</button>
+                <button class="btn btn-danger" id="confirmDelete">Delete Cafe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST ============ -->
+    <div class="toast" id="toast"></div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>
