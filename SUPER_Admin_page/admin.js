@@ -13,9 +13,17 @@ function hasActiveSession() {
         return true;
     }
 }
+// Line ~6 — change the auth guard redirect
 if (!hasActiveSession()) {
-    window.location.href = "admin.html";
+    window.location.href = "../index.html";   // was "admin.html" — caused the loop
 }
+
+// Logout button — change the redirect target
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    try { sessionStorage.removeItem("tableqr_session"); }
+    catch (err) { console.warn("Could not clear session storage:", err); }
+    window.location.href = "../index.html";   // was "admin.html" — same loop
+});
 
 /* =========================================================
    STATE
